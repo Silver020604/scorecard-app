@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scorecard Safran Cabin — Resumen semanal</title>
+
+  <!-- ✅ Enlaces correctos -->
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="manifest" href="../manifest.json" />
+</head>
+<body>
+  <header>
+    <h1>Scorecard Safran Cabin — Resumen semanal</h1>
+
+    <!-- Botón discreto para regresar a Admin (login) -->
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+      <button id="btnBackToAdmin" class="btn">↩️ Regresar a Admin</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Filtros -->
+    <section class="toolbar" role="toolbar" aria-label="Filtros">
+      <div class="field"><label for="fechaExec">Fecha</label><input id="fechaExec" type="date" /></div>
+      <div class="field"><label for="programaExec">Programa</label><select id="programaExec"></select></div>
+      <div class="field" style="margin-left:auto"><label></label>
+        <div class="legend">
+          <span class="dot green"></span> Verde
+          <span class="dot yellow"></span> Amarillo
+          <span class="dot red"></span> Rojo
+          <span class="dot blue"></span> Azul
+        </div>
+      </div>
+    </section>
+
+    <!-- Conteos -->
+    <section class="grid">
+      <div class="card"><div class="kpi"><span class="dot green"></span><strong>Verdes:</strong> <span id="execCntGreen">0</span></div></div>
+      <div class="card"><div class="kpi"><span class="dot yellow"></span><strong>Amarillos:</strong> <span id="execCntYellow">0</span></div></div>
+      <div class="card"><div class="kpi"><span class="dot red"></span><strong>Rojos:</strong> <span id="execCntRed">0</span></div></div>
+      <div class="card"><div class="kpi"><span class="dot blue"></span><strong>Informativos:</strong> <span id="execCntBlue">0</span></div></div>
+    </section>
+
+    <!-- Tabla semanal -->
+    <section id="execWeeklyTable" class="weekly"></section>
+    <p class="hint">%/ratios se <strong>promedian</strong>. Conteos se <strong>suman</strong>. Semáforo semanal usa ±<span id="execTolPctView">5</span>%.</p>
+  </main>
+
+  <!-- Scripts -->
+  <script src="./exec.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('../sw.js'); }
+  </script>
+</body>
+</html>

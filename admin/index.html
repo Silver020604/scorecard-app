@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scorecard Safran Cabin — Captura diaria</title>
+
+  <!-- Enlaces correctos -->
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="manifest" href="../manifest.json" />
+</head>
+<body>
+  <header>
+    <h1>Scorecard Safran Cabin — Captura diaria</h1>
+  </header>
+
+  <!-- Gate: bloquea la página hasta iniciar sesión -->
+  <section id="authGate" class="auth-gate">
+    <div class="gate-card">
+      <h3>Acceso requerido</h3>
+      <p>Inicia sesión para continuar.</p>
+      <div style="margin-top:10px">
+        <button id="gateLoginBtn" class="btn primary">Iniciar sesión</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Barra de login (muestra usuario y botón Salir) -->
+  <section class="auth-bar" aria-label="Autenticación">
+    <div id="authStatus" class="user"></div>
+  </section>
+
+  <!-- Diálogo de login -->
+  <dialog id="loginDialog">
+    <form id="loginForm" method="dialog">
+      <h3>Iniciar sesión</h3>
+      <label for="loginUser">Usuario</label>
+      <input id="loginUser" type="text" required />
+      <label for="loginPass">Contraseña</label>
+      <input id="loginPass" type="password" required />
+      <div style="margin-top:10px">
+        <button type="submit" class="btn primary">Entrar</button>
+        <button type="button" class="btn" onclick="document.getElementById('loginDialog').close()">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <main>
+    <!-- Toolbar principal -->
+    <section class="toolbar" role="toolbar" aria-label="Acciones">
+      <div class="field"><label for="fecha">Fecha</label><input id="fecha" type="date" /></div>
+      <div class="field"><label for="programa">Programa</label><select id="programa"></select></div>
+      <div class="field"><label for="tolQuick">% Amarillo</label><input id="tolQuick" type="number" min="0" max="50" step="1" placeholder="5" /></div>
+
+      <div class="field"><label></label><button id="addAreaBtn" class="btn">➕ Añadir área</button></div>
+      <div class="field"><label></label><button id="saveAll" class="btn">💾 Guardar todo</button></div>
+      <div class="field"><label></label><button id="exportBtn" class="btn">⬇️ Descargar reporte</button></div>
+      <div class="field"><label></label><button id="importBtn" class="btn">⬆️ Ver reporte</button></div>
+      <div class="field" style="margin-left:auto"><label></label>
+        <div class="legend">
+          <span class="dot green"></span> Verde
+          <span class="dot yellow"></span> Amarillo
+          <span class="dot red"></span> Rojo
+          <span class="dot blue"></span> Azul
+        </div>
+      </div>
+    </section>
+
+    <!-- Conteos -->
+    <section class="grid">
+      <div class="card"><div class="kpi"><span class="dot green"></span><strong>Verdes:</strong> <span id="cntGreen">0</span></div></div>
+      <div class="card"><div class="kpi"><span class="dot yellow"></span><strong>Amarillos:</strong> <span id="cntYellow">0</span></div></div>
+      <div class="card"><div class="kpi"><span class="dot red"></span><strong>Rojos:</strong> <span id="cntRed">0</span></div></div>
+      <div class="card"><div class="kpi"><span class="dot blue"></span><strong>Informativos:</strong> <span id="cntBlue">0</span></div></div>
+    </section>
+
+    <!-- Áreas -->
+    <section id="areasContainer"></section>
+
+    <!-- Resumen semanal (Admin) -->
+    <section class="weekly">
+      <h3 style="margin:0 0 8px 0; color:#ffd7a6">Resumen semanal (todos los programas)</h3>
+      <div id="weeklyPrograms"></div>
+      <p class="hint">%/ratios se <strong>promedian</strong>. Conteos se <strong>suman</strong>. Semáforo semanal usa ±<span id="tolPctView">5</span>%.</p>
+    </section>
+  </main>
+
+  <!-- Diálogo de configuración -->
+  <dialog id="config">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border)">
+      <strong>Configuración</strong>
+      <button onclick="document.getElementById('config').close()" class="btn">✖</button>
+    </div>
+    <div style="padding:14px">
+      <div class="field" style="margin-bottom:12px">
+        <label>Programas (coma-separadas)</label>
+        <textarea id="programasInput" rows="3" placeholder="COMAC, A220, FLOOR TO FLOOR, SHIPLOOSE, BOEING, AIRBUS"></textarea>
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>Áreas visibles (coma-separadas)</label>
+        <textarea id="areasInput" rows="4" placeholder="Safety, Quality, People, Delivery, Cost/Productividad, Supply Chain, EBIT, CI, Primarios, LTPO, Output Past DUE"></textarea>
+        <small class="hint">Duplicados se eliminan automáticamente. “Output Past DVE” se normaliza a “Output Past DUE”.</small>
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>Porcentaje semáforo amarillo (±%)</label>
+        <input id="tolPctInput" type="number" min="0" max="50" step="1" placeholder="5" />
+      </div>
+      <button id="saveCfg" class="btn primary">Guardar configuración</button>
+    </div>
+  </dialog>
+
+  <!-- Picker oculto para importar -->
+  <input id="filePicker" type="file" accept="application/json" style="display:none" />
+
+  <!-- Scripts -->
+  <script src="./admin.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('../sw.js'); }
+  </script>
+</body>
+</html>

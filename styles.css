@@ -1,0 +1,151 @@
+
+:root{
+  /* Base (oscuro profesional) */
+  --bg:#0b1323; --text:#eef2f7; --sub:#9fb3ce; --border:#1f3357;
+  --focus:#60a5fa; --panel:#0f1a33; --panel-2:#12213f; --panel-3:#14264a;
+  /* Semáforo */
+  --green:#20c25b; --yellow:#f59e0b; --red:#ef4444; --blue:#3b82f6;
+  /* Accentos corporativos */
+  --accent-blue:#2a5bd7; --accent-blue-2:#1946b8;
+  --accent-orange:#f08a24; --accent-orange-2:#cf6f10;
+  /* Temas por área (variantes de azul) */
+  --area-1:#142446; --area-2:#162a52; --area-3:#18315f; --area-4:#1a376b;
+  --area-5:#1c3d77; --area-6:#1e4483; --area-7:#214a8f; --area-8:#23519b;
+  --area-9:#2558a7; --area-10:#2760b3; --area-11:#2967bf;
+}
+
+*{box-sizing:border-box}
+html,body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,"Noto Sans",Helvetica,Arial,sans-serif;
+}
+
+header{padding:20px;border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));}
+h1{margin:0;text-align:center;font-size:26px;letter-spacing:.6px;font-weight:700;color:#e9effa}
+
+main{padding:20px;max-width:1280px;margin:0 auto}
+
+/* Toolbar y campos */
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:16px 0;
+  background:var(--panel);padding:12px;border:1px solid var(--border);border-radius:14px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:180px}
+label{font-size:12px;color:var(--sub)}
+select,input,button,textarea{background:#0e1c37;color:var(--text);border:1px solid var(--border);
+  padding:8px 10px;border-radius:10px}
+select:focus,input:focus,textarea:focus,button:focus{outline:2px solid var(--focus);outline-offset:2px}
+.btn{padding:8px 12px;border-radius:10px;border:1px solid var(--border);cursor:pointer}
+.btn.primary{background:linear-gradient(180deg, rgba(240,138,36,.15), rgba(240,138,36,.12));
+  border-color:var(--accent-orange-2);color:#ffd7a6}
+
+/* Leyenda y tarjetas */
+.legend{display:flex;gap:10px;align-items:center}
+.dot{width:10px;height:10px;border-radius:999px;display:inline-block}
+.dot.green{background:var(--green)} .dot.yellow{background:var(--yellow)}
+.dot.red{background:var(--red)} .dot.blue{background:var(--blue)}
+
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.card{background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:12px}
+.kpi{display:flex;align-items:center;gap:10px}
+
+/* Bloques de áreas */
+.area-block{margin:18px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.area-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:#fff;
+  background:linear-gradient(90deg, var(--accent-blue-2), var(--accent-blue))}
+.area-title{font-weight:700}
+.area-actions .btn{background:linear-gradient(180deg, rgba(42,91,215,.18), rgba(25,70,184,.14));border-color:#2752c6}
+
+/* Tabla */
+.table-wrap{border-top:2px solid var(--accent-orange)}
+.table-container{max-height:48vh;overflow:auto}
+table{width:100%;border-collapse:separate;border-spacing:0}
+thead th{
+  position:sticky;top:0;z-index:2;
+  background:linear-gradient(180deg, rgba(240,138,36,.20), rgba(240,138,36,.10));
+  padding:10px;border-bottom:1px solid var(--border);text-transform:uppercase;font-size:12px;color:#fff
+}
+th,td{padding:8px 10px;text-align:left;vertical-align:middle;border-top:1px solid var(--border)}
+tbody tr:nth-child(odd){background:rgba(255,255,255,.04)}
+tbody tr:nth-child(even){background:rgba(255,255,255,.06)}
+tbody tr:hover{background:rgba(42,91,215,.10)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;font-size:12px;border:1px solid var(--border)}
+.badge.green{background:rgba(34,197,94,.12);color:#bbf7d0;border-color:#166534}
+.badge.yellow{background:rgba(245,158,11,.12);color:#fde68a;border-color:#92400e}
+.badge.red{background:rgba(239,68,68,.12);color:#fecaca;border-color:#7f1d1d}
+.badge.blue{background:rgba(59,130,246,.12);color:#bfdbfe;border-color:#1e3a8a}
+
+.hint{font-size:12px;color:#d3def5;padding:8px 12px}
+
+/* Temas alternados por área */
+.area-theme-1{background:var(--area-1)} .area-theme-2{background:var(--area-2)} .area-theme-3{background:var(--area-3)}
+.area-theme-4{background:var(--area-4)} .area-theme-5{background:var(--area-5)} .area-theme-6{background:var(--area-6)}
+.area-theme-7{background:var(--area-7)} .area-theme-8{background:var(--area-8)} .area-theme-9{background:var(--area-9)}
+.area-theme-10{background:var(--area-10)} .area-theme-11{background:var(--area-11)}
+
+/* Resumen semanal */
+.weekly{margin-top:28px}
+.program-block{border:1px solid var(--border);border-radius:16px;margin:18px 0;overflow:hidden;box-shadow:0 8px 18px rgba(0,0,0,.25)}
+.program-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;
+  background:linear-gradient(90deg, var(--accent-orange-2), var(--accent-orange));color:#fff}
+.program-name{font-weight:800;letter-spacing:.4px}
+.program-body{background:var(--panel-3);padding:12px}
+.program-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0}
+.program-kpis .card{background:#1c2540}
+.program-table .table-container{max-height:34vh}
+.program-table thead th{background:linear-gradient(180deg, rgba(42,91,215,.20), rgba(42,91,215,.10));}
+
+/* Gate de autenticación (overlay bloquea la página hasta login) */
+.auth-gate{
+  position:fixed; inset:0;
+  background:rgba(11,19,35,0.7); backdrop-filter: blur(2px);
+  display:flex; align-items:center; justify-content:center; z-index:9999;
+}
+.auth-gate[hidden]{display:none}
+.gate-card{
+  background:var(--panel-2); border:1px solid var(--border); border-radius:12px;
+  padding:16px; max-width:360px; color:var(--text); box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+/* Barra de autenticación */
+.auth-bar{display:flex;justify-content:flex-end;gap:.5rem;margin:8px 0}
+.auth-bar .user{font-size:13px;color:var(--sub)}
+
+/* (Opcional) limitar ancho de columna Notas */
+td.notes{max-width:360px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+
+/* Impresión */
+@media print{
+  header,.toolbar,.actions .btn{display:none!important}
+  thead th{top:0}
+  body{background:#fff;color:#111}
+  .card,table{border-color:#ccc}
+  .table-container{max-height:none;overflow:visible}
+}
+
+/* =========================================================================
+   SOLO VIEWER (exec): Scroll horizontal abajo en la celda de Notas
+   ========================================================================= */
+#execWeeklyTable td.notes,
+.weekly td.notes{
+  /* Tamaño visible de la celda (ajústalo a tu preferencia) */
+  max-width: 420px;
+  max-height: 140px;
+
+  /* ✅ Scroll horizontal abajo y vertical a la derecha */
+  overflow-x: auto;   /* barra horizontal */
+  overflow-y: auto;   /* mantiene barra vertical si es necesario */
+
+  /* Sin salto de línea: si la línea es larga → aparece scroll horizontal */
+  white-space: pre;
+
+  /* Opcionales: estética consistente con el tema y evitar recortes */
+  background: #0e1c37;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px;
+
+  /* Asegura que no se oculte contenido en Viewer */
+  text-overflow: initial;
+}
