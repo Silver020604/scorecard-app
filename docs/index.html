@@ -7,8 +7,10 @@
   <title>Scorecard Safran Cabin — Captura diaria</title>
 
   <!-- ✅ Enlaces correctos dentro de /docs -->
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icons/icon-192.png" />
+  <meta name="theme-color" content="#0b1323" />
 </head>
 <body>
   <header>
@@ -26,7 +28,7 @@
     </div>
   </section>
 
-  <!-- Barra de login -->
+  <!-- Barra de login (usuario + Salir) -->
   <section class="auth-bar" aria-label="Autenticación">
     <div id="authStatus" class="user"></div>
   </section>
@@ -56,7 +58,7 @@
       <div class="field"><label></label><button id="addAreaBtn" class="btn">➕ Añadir área</button></div>
       <div class="field"><label></label><button id="saveAll" class="btn">💾 Guardar todo</button></div>
       <div class="field"><label></label><button id="exportBtn" class="btn">⬇️ Descargar reporte</button></div>
-      <div class="field"><label></label><button id="importBtn" class="btn">⬆️ Ver reporte</button></div>
+      <div class="field"><label></label><button id="importBtn" class="btn">⬆️ Importar reporte</button></div>
       <div class="field" style="margin-left:auto"><label></label>
         <div class="legend">
           <span class="dot green"></span> Verde
@@ -87,17 +89,19 @@
   </main>
 
   <!-- Picker oculto para importar -->
-  <input id="filePicker" type="file" accept="application/json" style="display:none" />
+  <input id="filePicker" type="file" accept="application/json, text/csv" style="display:none" />
 
-  <!-- ✅ Script principal y registro del SW -->
-  <script src="admin.js"></script>
+  <!-- ✅ Script principal (TU admin.js) + registro del SW -->
+  <script src="./admin.js"></script>
   <script>
-    // Scope: /scorecard-app/ (porque se publica desde /docs)
+    // El SW vive en /docs → scope efectivo: /scorecard-app/
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+      navigator.serviceWorker.register('./sw.js').catch(console.error);
     }
-    const gateBtn = document.getElementById('gateLoginBtn');
-    if (gateBtn) gateBtn.addEventListener('click', () => document.getElementById('loginDialog').showModal());
+    // Abrir diálogo de login desde el gate (si tu admin.js no lo hace)
+    document.getElementById('gateLoginBtn')?.addEventListener('click', () => {
+      document.getElementById('loginDialog')?.showModal();
+    });
   </script>
 </body>
 </html>

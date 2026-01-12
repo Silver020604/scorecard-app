@@ -1,41 +1,80 @@
 
-/* Service Worker - network-first para HTML/CSS/JS (ideal en desarrollo y GitHub Pages) */
-const CACHE = 'scorecard-v2';
-self.skipWaiting();
-self.clients.claim();
+// ===== Service Worker – GitHub Pages (/docs) =====
+const BASE = '/scorecard-app';     // prefijo del repo
+const VERSION = 'v3';              // incrementa cuando cambies recursos
+const STATIC_CACHE = `${BASE}-static-${VERSION}`;
 
-const CORE = [
-  './',
-  './styles.css',
-  './manifest.json',
-  './exec/index.html', './exec/exec.js',
-  './admin/index.html','./admin/admin.js'
+const STATIC_ASSETS = [
+  `${BASE}/`,
+  `${BASE}/index.html`,
+  `${BASE}/styles.css`,
+  `${BASE}/admin.js`,
+  `${BASE}/manifest.json`,
+  `${BASE}/icons/icon-192.png`,
+  `${BASE}/icons/icon-512.png`,
+  `${BASE}/exec/index.html`,
+  `${BASE}/exec/exec.js`
 ];
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)));
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(STATIC_CACHE).then((c) => c.addAll(STATIC_ASSETS)));
+  self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.map(k => (k !== CACHE ? caches.delete(k) : null))))
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys
+        .filter((k) => k.startsWith(`${BASE}-static-`) && k !== STATIC_CACHE)
+        .map((k) => caches.delete(k)))
+    )
   );
+  self.clients.claim();
 });
 
-/* Network-first para docs/scripts/styles; cache-first para otros (icons, imágenes) */
-self.addEventListener('fetch', (e) => {
-  const req = e.request;
-  const dest = req.destination; // 'document' | 'script' | 'style' | 'image' ...
+// HTML/JSON: network-first (para ver cambios rápidos)
+// CSS/JS/IMG: cache-first (rápido y offline)
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
+  if (!url.pathname.startsWith(BASE)) return;
 
-  if (dest === 'document' || dest === 'script' || dest === 'style') {
-    e.respondWith(
-      fetch(req).then(r => {
-        const copy = r.clone();
-        caches.open(CACHE).then(c => c.put(req, copy));
-        return r;
-      }).catch(() => caches.match(req))
+  const isHTML = req.headers.get('accept')?.includes('text/html');
+  const isJSON = url.pathname.endsWith('.json');
+  const isStatic = /\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff2?)$/.test(url.pathname);
+
+  if (isHTML || isJSON) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(STATIC_CACHE).then((c) => c.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req))
+        .then((cached) => cached || caches.match(`${BASE}/index.html`))
     );
-  } else {
-    e.respondWith(caches.match(req).then(res => res || fetch(req)));
+    return;
   }
+
+  if (isStatic) {
+    event.respondWith(
+      caches.match(req).then((cached) => cached || fetch(req).then((res) => {
+        const copy = res.clone();
+        caches.open(STATIC_CACHE).then((c) => c.put(req, copy));
+        return res;
+      }))
+    );
+    return;
+  }
+
+  event.respondWith(
+    fetch(req)
+      .then((res) => {
+        const copy = res.clone();
+        caches.open(STATIC_CACHE).then((c) => c.put(req, copy));
+        return res;
+      })
+      .catch(() => caches.match(req))
+  );
 });

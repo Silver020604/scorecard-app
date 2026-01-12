@@ -9,21 +9,22 @@
   <!-- ✅ Enlaces desde /docs/exec/ hacia /docs -->
   <link rel="stylesheet" href="../styles.css" />
   <link rel="manifest" href="../manifest.json" />
+  <link rel="icon" href="../icons/icon-192.png" />
+  <meta name="theme-color" content="#0b1323" />
 </head>
 <body>
   <header>
     <h1>Scorecard Safran Cabin — Resumen semanal</h1>
-
-    <!-- Botón para volver a Admin (index en /docs) -->
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-      <a class="btn" href="../index.html">↩️ Regresar a Admin</a>
+    <div class="toolbar" style="display:flex;gap:8px;align-items:center;justify-content:flex-end">
+      <a href="../index.html" class="btn">↩️ Regresar a Admin</a>
+      <!-- Botón de exportación CSV (si tu exec.js lo implementa) -->
+      <button id="exportCsvBtn" class="btn">⬇️ Exportar CSV (semanal)</button>
     </div>
   </header>
 
   <main>
     <!-- Filtros -->
     <section class="toolbar" role="toolbar" aria-label="Filtros">
-      <div class="field"><label for="fechaExec">Fecha</label><input id="fechaExec" type="date" /></div>
       <div class="field"><label for="programaExec">Programa</label><select id="programaExec"></select></div>
       <div class="field" style="margin-left:auto"><label></label>
         <div class="legend">
@@ -35,7 +36,7 @@
       </div>
     </section>
 
-    <!-- Conteos -->
+    <!-- KPIs -->
     <section class="grid">
       <div class="card"><div class="kpi"><span class="dot green"></span><strong>Verdes:</strong> <span id="execCntGreen">0</span></div></div>
       <div class="card"><div class="kpi"><span class="dot yellow"></span><strong>Amarillos:</strong> <span id="execCntYellow">0</span></div></div>
@@ -48,11 +49,11 @@
     <p class="hint">%/ratios se <strong>promedian</strong>. Conteos se <strong>suman</strong>. Semáforo semanal usa ±<span id="execTolPctView">5</span>%.</p>
   </main>
 
-  <!-- ✅ Script y registro del SW relativo a /docs -->
+  <!-- Tu lógica Exec -->
   <script src="./exec.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('../sw.js');
+      navigator.serviceWorker.register('../sw.js').catch(console.error);
     }
   </script>
 </body>
