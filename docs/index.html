@@ -89,16 +89,16 @@
   </main>
 
   <!-- Picker oculto para importar -->
-  <input id="filePicker" type="file" accept="application/json, text/csv" style="display:none" />
+  <input id="filePicker" type="file" accept="application/json" style="display:none" />
 
-  <!-- ✅ Script principal (TU admin.js) + registro del SW -->
+  <!-- ✅ Tu lógica Admin + registro del SW relativo a /docs -->
   <script src="./admin.js"></script>
   <script>
-    // El SW vive en /docs → scope efectivo: /scorecard-app/
+    // El SW vive en /docs → scope efectivo /scorecard-app/
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(console.error);
     }
-    // Abrir diálogo de login desde el gate (si tu admin.js no lo hace)
+    // Abrir login desde el gate (por si tu admin.js no engancha el botón)
     document.getElementById('gateLoginBtn')?.addEventListener('click', () => {
       document.getElementById('loginDialog')?.showModal();
     });

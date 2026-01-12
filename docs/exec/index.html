@@ -15,9 +15,8 @@
 <body>
   <header>
     <h1>Scorecard Safran Cabin — Resumen semanal</h1>
-    <div class="toolbar" style="display:flex;gap:8px;align-items:center;justify-content:flex-end">
-      <a href="../index.html" class="btn">↩️ Regresar a Admin</a>
-      <!-- Botón de exportación CSV (si tu exec.js lo implementa) -->
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+      <button id="btnBackToAdmin" class="btn">↩️ Regresar a Admin</button>
       <button id="exportCsvBtn" class="btn">⬇️ Exportar CSV (semanal)</button>
     </div>
   </header>
@@ -25,6 +24,7 @@
   <main>
     <!-- Filtros -->
     <section class="toolbar" role="toolbar" aria-label="Filtros">
+      <div class="field"><label for="fechaExec">Fecha</label><input id="fechaExec" type="date" /></div>
       <div class="field"><label for="programaExec">Programa</label><select id="programaExec"></select></div>
       <div class="field" style="margin-left:auto"><label></label>
         <div class="legend">
@@ -49,7 +49,7 @@
     <p class="hint">%/ratios se <strong>promedian</strong>. Conteos se <strong>suman</strong>. Semáforo semanal usa ±<span id="execTolPctView">5</span>%.</p>
   </main>
 
-  <!-- Tu lógica Exec -->
+  <!-- Tu lógica Exec + registro del SW relativo a /docs -->
   <script src="./exec.js"></script>
   <script>
     if ('serviceWorker' in navigator) {

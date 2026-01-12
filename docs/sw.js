@@ -1,9 +1,10 @@
 
 // ===== Service Worker – GitHub Pages (/docs) =====
 const BASE = '/scorecard-app';     // prefijo del repo
-const VERSION = 'v3';              // incrementa cuando cambies recursos
+const VERSION = 'v4';              // incrementa cuando cambies recursos
 const STATIC_CACHE = `${BASE}-static-${VERSION}`;
 
+// Precarga de recursos estáticos
 const STATIC_ASSETS = [
   `${BASE}/`,
   `${BASE}/index.html`,
@@ -32,14 +33,26 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// HTML/JSON: network-first (para ver cambios rápidos)
+// Mensajes desde la app (por ejemplo FLUSH para limpiar caché)
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'FLUSH') {
+    caches.keys().then(keys => {
+      keys.forEach(k => {
+        if (k.startsWith(`${BASE}-static-`)) caches.delete(k);
+      });
+    });
+  }
+});
+
+// HTML/JSON: network-first (ver cambios rápido)
 // CSS/JS/IMG: cache-first (rápido y offline)
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
   if (!url.pathname.startsWith(BASE)) return;
 
-  const isHTML = req.headers.get('accept')?.includes('text/html');
+  const accept = req.headers.get('accept') || '';
+  const isHTML = accept.includes('text/html');
   const isJSON = url.pathname.endsWith('.json');
   const isStatic = /\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff2?)$/.test(url.pathname);
 
@@ -68,6 +81,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // default: network-then-cache
   event.respondWith(
     fetch(req)
       .then((res) => {
