@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Scorecard Safran Cabin — Captura diaria</title>
 
-  <!-- Enlaces correctos -->
-  <link rel="stylesheet" href="../styles.css" />
-  <link rel="manifest" href="../manifest.json" />
+  <!-- ✅ Enlaces correctos dentro de /docs -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
 </head>
 <body>
   <header>
@@ -26,7 +26,7 @@
     </div>
   </section>
 
-  <!-- Barra de login (muestra usuario y botón Salir) -->
+  <!-- Barra de login -->
   <section class="auth-bar" aria-label="Autenticación">
     <div id="authStatus" class="user"></div>
   </section>
@@ -113,10 +113,15 @@
   <!-- Picker oculto para importar -->
   <input id="filePicker" type="file" accept="application/json" style="display:none" />
 
-  <!-- Scripts -->
-  <script src="./admin.js"></script>
+  <!-- ✅ Script principal y registro del SW -->
+  <script src="admin.js"></script>
   <script>
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('../sw.js'); }
+    if ('serviceWorker' in navigator) {
+      // Scope /scorecard-app/ (porque se publica desde /docs)
+      navigator.serviceWorker.register('sw.js');
+    }
+    const gateBtn = document.getElementById('gateLoginBtn');
+    if (gateBtn) gateBtn.addEventListener('click', () => document.getElementById('loginDialog').showModal());
   </script>
 </body>
 </html>

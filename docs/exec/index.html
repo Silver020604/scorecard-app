@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Scorecard Safran Cabin — Resumen semanal</title>
 
-  <!-- ✅ Enlaces correctos -->
+  <!-- ✅ Enlaces desde /docs/exec/ hacia /docs -->
   <link rel="stylesheet" href="../styles.css" />
   <link rel="manifest" href="../manifest.json" />
 </head>
@@ -14,7 +14,7 @@
   <header>
     <h1>Scorecard Safran Cabin — Resumen semanal</h1>
 
-    <!-- Botón discreto para regresar a Admin (login) -->
+    <!-- Botón para volver a Admin (index en /docs) -->
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
       <button id="btnBackToAdmin" class="btn">↩️ Regresar a Admin</button>
     </div>
@@ -48,10 +48,14 @@
     <p class="hint">%/ratios se <strong>promedian</strong>. Conteos se <strong>suman</strong>. Semáforo semanal usa ±<span id="execTolPctView">5</span>%.</p>
   </main>
 
-  <!-- Scripts -->
+  <!-- ✅ Script y registro del SW relativo a /docs -->
   <script src="./exec.js"></script>
   <script>
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('../sw.js'); }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('../sw.js');
+    }
+    const backBtn = document.getElementById('btnBackToAdmin');
+    if (backBtn) backBtn.addEventListener('click', () => { location.href = '../index.html'; });
   </script>
 </body>
 </html>
