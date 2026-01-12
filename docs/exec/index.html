@@ -16,7 +16,7 @@
 
     <!-- Botón para volver a Admin (index en /docs) -->
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-      <button id="btnBackToAdmin" class="btn">↩️ Regresar a Admin</button>
+      <a class="btn" href="../index.html">↩️ Regresar a Admin</a>
     </div>
   </header>
 
@@ -54,8 +54,6 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('../sw.js');
     }
-    const backBtn = document.getElementById('btnBackToAdmin');
-    if (backBtn) backBtn.addEventListener('click', () => { location.href = '../index.html'; });
   </script>
 </body>
 </html>

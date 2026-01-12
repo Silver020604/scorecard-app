@@ -86,38 +86,14 @@
     </section>
   </main>
 
-  <!-- Diálogo de configuración -->
-  <dialog id="config">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border)">
-      <strong>Configuración</strong>
-      <button onclick="document.getElementById('config').close()" class="btn">✖</button>
-    </div>
-    <div style="padding:14px">
-      <div class="field" style="margin-bottom:12px">
-        <label>Programas (coma-separadas)</label>
-        <textarea id="programasInput" rows="3" placeholder="COMAC, A220, FLOOR TO FLOOR, SHIPLOOSE, BOEING, AIRBUS"></textarea>
-      </div>
-      <div class="field" style="margin-bottom:12px">
-        <label>Áreas visibles (coma-separadas)</label>
-        <textarea id="areasInput" rows="4" placeholder="Safety, Quality, People, Delivery, Cost/Productividad, Supply Chain, EBIT, CI, Primarios, LTPO, Output Past DUE"></textarea>
-        <small class="hint">Duplicados se eliminan automáticamente. “Output Past DVE” se normaliza a “Output Past DUE”.</small>
-      </div>
-      <div class="field" style="margin-bottom:12px">
-        <label>Porcentaje semáforo amarillo (±%)</label>
-        <input id="tolPctInput" type="number" min="0" max="50" step="1" placeholder="5" />
-      </div>
-      <button id="saveCfg" class="btn primary">Guardar configuración</button>
-    </div>
-  </dialog>
-
   <!-- Picker oculto para importar -->
   <input id="filePicker" type="file" accept="application/json" style="display:none" />
 
   <!-- ✅ Script principal y registro del SW -->
   <script src="admin.js"></script>
   <script>
+    // Scope: /scorecard-app/ (porque se publica desde /docs)
     if ('serviceWorker' in navigator) {
-      // Scope /scorecard-app/ (porque se publica desde /docs)
       navigator.serviceWorker.register('sw.js');
     }
     const gateBtn = document.getElementById('gateLoginBtn');
