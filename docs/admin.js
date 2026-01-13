@@ -25,7 +25,7 @@ const AUTH_KEY = 'scorecardUser';
 const USERS = [
   { user:'silver',               pass:'admin123',  role:'admin'  },
   { user:'JL.RODRIGUEZ',    pass:'viewer123', role:'viewer' },
-  { user:'alejandro.baeza',      pass:'viewer123', role:'viewer' },
+  { user:'alejandro.gracida',      pass:'viewer123', role:'viewer' },
   { user:'carmen.lopez',         pass:'viewer123', role:'viewer' },
   { user:'jaime.castro',         pass:'viewer123', role:'viewer' }
 ];
