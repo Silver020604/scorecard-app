@@ -10,90 +10,39 @@
 // --------- Utilidades ----------
 const $  = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
-function toNumberOrNull(v){
-  if (v===undefined || v===null) return null;
-  const n = Number(String(v).replace(/[^\-0-9\.]/g,'').trim());
-  return Number.isFinite(n) ? n : null;
-}
-function todayLocal(){
-  const d=new Date();
-  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${da}`;
-}
-function isoWeekString(dStr){
-  const [Y,M,D]=dStr.split('-').map(Number);
-  const d=new Date(Date.UTC(Y,M-1,D));
-  const dayNum=d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate()+4-dayNum);
-  const y=d.getUTCFullYear();
-  const yearStart=new Date(Date.UTC(y,0,1));
-  const weekNo=Math.ceil(((d-yearStart)/86400000+1)/7);
-  return `${y}-W${String(weekNo).padStart(2,'0')}`;
-}
-function isPercent(meta, actual){
-  const sMeta=String(meta||''), sAct=String(actual||'');
-  if (/%/.test(sMeta) || /%/.test(sAct)) return true;
-  const m=toNumberOrNull(meta), a=toNumberOrNull(actual);
-  if (m!=null && a!=null){
-    if ((m>0&&m<=1) || (a>0&&a<=1)) return true;
-  }
-  return false;
-}
-function fmtDisplayPercent(v){
-  const n=toNumberOrNull(v);
-  if (n==null) return String(v||'');
-  return /%/.test(String(v)) ? String(v) : `${(n*100).toFixed(2)}%`;
-}
+function toNumberOrNull(v){ if (v===undefined || v===null) return null; const n = Number(String(v).replace(/[^\-0-9\.]/g,'').trim()); return Number.isFinite(n) ? n : null; }
+function todayLocal(){ const d=new Date(); const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${da}`; }
+function isoWeekString(dStr){ const [Y,M,D]=dStr.split('-').map(Number); const d=new Date(Date.UTC(Y,M-1,D)); const dayNum=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-dayNum); const y=d.getUTCFullYear(); const yearStart=new Date(Date.UTC(y,0,1)); const weekNo=Math.ceil(((d-yearStart)/86400000+1)/7); return `${y}-W${String(weekNo).padStart(2,'0')}`; }
+function isPercent(meta, actual){ const sMeta=String(meta||''), sAct=String(actual||''); if (/%/.test(sMeta) || /%/.test(sAct)) return true; const m=toNumberOrNull(meta), a=toNumberOrNull(actual); if (m!=null && a!=null){ if ((m>0&&m<=1) || (a>0&&a<=1)) return true; } return false; }
+function fmtDisplayPercent(v){ const n=toNumberOrNull(v); if (n==null) return String(v||''); return /%/.test(String(v)) ? String(v) : `${(n*100).toFixed(2)}%`; }
 function getTol(){ return Math.max(0, Math.min(50, Number(localStorage.getItem('tolPct')||'5')))/100; }
-function evaluarEstado({tipo, meta, actual, direccion}){
-  const tol=getTol();
-  if (tipo==='informativo') return {estado:'Info', color:'azul'};
-  const m=toNumberOrNull(meta), a=toNumberOrNull(actual);
-  if (m===null || a===null) return {estado:'Info', color:'azul'};
-  if (direccion==='menor'){
-    if (a<=m) return {estado:'Cumple', color:'verde'};
-    if (a<=m*(1+tol)) return {estado:'Cerca', color:'amarillo'};
-    return {estado:'Crítico', color:'rojo'};
-  } else if (direccion==='mayor'){
-    if (a>=m) return {estado:'Cumple', color:'verde'};
-    if (a>=m*(1-tol)) return {estado:'Cerca', color:'amarillo'};
-    return {estado:'Crítico', color:'rojo'};
-  }
-  return {estado:'Info', color:'azul'};
-}
-// Mapeo ES→EN clases
+function evaluarEstado({tipo, meta, actual, direccion}){ const tol=getTol(); if (tipo==='informativo') return {estado:'Info', color:'azul'}; const m=toNumberOrNull(meta), a=toNumberOrNull(actual); if (m===null || a===null) return {estado:'Info', color:'azul'}; if (direccion==='menor'){ if (a<=m) return {estado:'Cumple', color:'verde'}; if (a<=m*(1+tol)) return {estado:'Cerca', color:'amarillo'}; return {estado:'Crítico', color:'rojo'}; } else if (direccion==='mayor'){ if (a>=m) return {estado:'Cumple', color:'verde'}; if (a>=m*(1-tol)) return {estado:'Cerca', color:'amarillo'}; return {estado:'Crítico', color:'rojo'}; } return {estado:'Info', color:'azul'}; }
 const COLOR_CLASS = { verde:'green', amarillo:'yellow', rojo:'red', azul:'blue' };
 
 // --------- Auth SOLO en Admin ----------
 const AUTH_KEY = 'scorecardUser';
-// ⚠️ Mantenemos tus usuarios exactos
+// ⚠️ Mantén estos usuarios (de tu SCS2)
 const USERS = [
-  { user:'silver',               pass:'admin123',   role:'admin'  },
-  { user:'alejandro.gracida',    pass:'viewer123',  role:'viewer' },
-  { user:'alejandro.baeza',      pass:'viewer123',  role:'viewer' },
-  { user:'carmen.lopez',         pass:'viewer123',  role:'viewer' },
-  { user:'jaime.castro',         pass:'viewer123',  role:'viewer' }
+  { user:'silver',               pass:'admin123',  role:'admin'  },
+  { user:'alejandro.gracida',    pass:'viewer123', role:'viewer' },
+  { user:'alejandro.baeza',      pass:'viewer123', role:'viewer' },
+  { user:'carmen.lopez',         pass:'viewer123', role:'viewer' },
+  { user:'jaime.castro',         pass:'viewer123', role:'viewer' }
 ];
-function getUser(){
-  try { return JSON.parse(localStorage.getItem(AUTH_KEY)||'null'); }
-  catch(e){ return null; }
-}
+function getUser(){ try { return JSON.parse(localStorage.getItem(AUTH_KEY)||'null'); } catch(e){ return null; } }
 function setUser(u){ localStorage.setItem(AUTH_KEY, JSON.stringify(u)); paintAuthBar(); enforceGateAndRole(); }
 function logout(){ localStorage.removeItem(AUTH_KEY); paintAuthBar(); enforceGateAndRole(); }
-function tryLogin(user, pass){
-  const match = USERS.find(u => u.user === user && u.pass === pass);
-  if (match){ setUser({user:match.user, role:match.role}); return true; }
-  return false;
-}
-// Barra auth + bloqueos
+function tryLogin(user, pass){ const match = USERS.find(u => u.user === user && u.pass === pass); if (match){ setUser({user:match.user, role:match.role}); return true; } return false; }
+
+// Barra + bloqueos
 function paintAuthBar(){
   const box = $('#authStatus'); if (!box) return;
   const u = getUser();
   box.innerHTML = u
     ? `👤 ${u.user} (${u.role}) <button id="btnLogout" class="btn">Salir</button>`
     : `<button id="btnLogin" class="btn primary">Iniciar sesión</button>`;
-  const btnLogin = $('#btnLogin');  if (btnLogin)  btnLogin.addEventListener('click', ()=> $('#loginDialog').showModal());
-  const btnLogout= $('#btnLogout'); if (btnLogout) btnLogout.addEventListener('click', logout);
+  $('#btnLogin')?.addEventListener('click', () => $('#loginDialog')?.showModal());
+  $('#btnLogout')?.addEventListener('click', logout);
   const isAdmin = !!u && u.role === 'admin';
   ['addAreaBtn','saveAll','exportBtn','importBtn','configBtn','saveCfg'].forEach(id=>{
     const el=document.getElementById(id);
@@ -105,16 +54,39 @@ function showGate(){ const g=$('#authGate'); if (g){ g.hidden=false; document.bo
 function hideGate(){ const g=$('#authGate'); if (g){ g.hidden=true;  document.body.style.overflow='auto';   } }
 function enforceGateAndRole(){
   const u = getUser();
-  if (!u){ showGate(); return; }           // sin usuario → gate
-  if (u.role !== 'admin'){                 // viewer en Admin → Exec
+  if (!u){ showGate(); return; } // sin usuario → gate
+  if (u.role !== 'admin'){       // viewer en Admin → Exec dentro de /docs/
     window.location.href = './exec/index.html';
     return;
   }
-  hideGate();                              // admin → entra
+  hideGate(); // admin → entra
 }
 document.addEventListener('DOMContentLoaded', ()=>{ if (!getUser()) showGate(); });
-const gateBtn = document.getElementById('gateLoginBtn');
-if (gateBtn){ gateBtn.addEventListener('click', ()=> $('#loginDialog').showModal()); }
+
+// Enlazar envío del login (manejado por JS, no por <form method="dialog">)
+(function wireLogin(){
+  const lf   = document.getElementById('loginForm');
+  const user = document.getElementById('loginUser');
+  const pass = document.getElementById('loginPass');
+  lf?.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const u = user?.value.trim();
+    const p = pass?.value;
+    if (!u || !p){ alert('Ingresa usuario y contraseña'); return; }
+    if (tryLogin(u, p)){
+      const cur = getUser();
+      if (cur?.role === 'viewer'){
+        window.location.assign('./exec/index.html');
+      } else {
+        hideGate();
+        paintAuthBar();
+        document.getElementById('loginDialog')?.close();
+      }
+    } else {
+      alert('Usuario o contraseña incorrectos');
+    }
+  });
+})();
 
 // --------- IndexedDB ----------
 let db;
@@ -191,7 +163,7 @@ function getAreas(){
   return normalizeAreas(raw);
 }
 function setAreas(newAreas){ localStorage.setItem('areas', normalizeAreas(newAreas).join(', ')); }
-// ✅ Default Programas como en tu SCS2
+// ✅ Programas por default
 function getProgramas(){
   const def='PRIMARIOS, A220, COMAC, BOEING, WAREHOUSE';
   return (localStorage.getItem('programas')||def).split(',').map(s=>s.trim()).filter(Boolean);
@@ -339,9 +311,7 @@ function addAreaInteractive(){
   if (!name) return;
   const clean=name.replace(/Output\s+Past\s+DVE/i,'Output Past DUE');
   const areas=getAreas(); const key=clean.toLowerCase();
-  if (areas.map(a=>a.toLowerCase()).includes(key)){
-    alert('El área ya existe.'); return;
-  }
+  if (areas.map(a=>a.toLowerCase()).includes(key)){ alert('El área ya existe.'); return; }
   areas.push(clean);
   setAreas(areas);
   buildAreas();
@@ -462,7 +432,6 @@ async function loadArea(area){
   if ((list||[]).length>0){
     recordsToTable(area, list);
   } else {
-    // Sin datos guardados → una fila vacía para comodidad
     newRow(area);
   }
 }
@@ -518,14 +487,12 @@ async function refreshWeeklyAllPrograms(){
     const allProg=await getAllByPrograma(programa);
     const weekRecords=(allProg||[]).filter(r=> isoWeekString(r.fecha)===isoWeek);
     const {rows,counts}=aggregateWeekly(weekRecords);
-    // Áreas sin datos
     const presentAreas=new Set(rows.map(r=> r.area));
     areasList.forEach(area=>{
       if (!presentAreas.has(area)){
         rows.push({area, kpi:'(sin datos guardados esta semana)', tipo:'informativo', meta:'—', actual:'—', direccion:'na', estado:'Info', color:'azul', perc:false});
       }
     });
-    // Render program block
     const block=document.createElement('section'); block.className='program-block';
     const head=document.createElement('div'); head.className='program-head';
     head.innerHTML=`<div class="program-name">${programa}</div><small>Semana ${isoWeek}</small>`;
@@ -582,6 +549,7 @@ function fillProgramas(){
   fillProgramas(); buildAreas();
   $('#fecha').value=todayLocal();
   $('#tolQuick').value=localStorage.getItem('tolPct')||'5';
+
   // Toolbar
   $('#tolQuick').addEventListener('change', ()=>{
     const v=String(Math.max(0, Math.min(50, Number($('#tolQuick').value||5))));
@@ -598,11 +566,13 @@ function fillProgramas(){
     getAreas().forEach(a=> clearArea(a));
     loadAllAreas();
   });
+
   // Botones principales
   $('#addAreaBtn').addEventListener('click', addAreaInteractive);
   $('#saveAll').addEventListener('click', saveAll);
   $('#exportBtn').addEventListener('click', handleExport);
   $('#importBtn').addEventListener('click', handleImport);
+
   // Configuración
   let cfgBtn=document.getElementById('configBtn');
   if (!cfgBtn){
@@ -614,21 +584,10 @@ function fillProgramas(){
   }
   cfgBtn.addEventListener('click', openConfig);
   $('#saveCfg').addEventListener('click', saveConfig);
+
   // Autenticación
   paintAuthBar(); enforceGateAndRole();
-  const lf = document.getElementById('loginForm');
-  if (lf){
-    lf.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const user = document.getElementById('loginUser').value.trim();
-      const pass = document.getElementById('loginPass').value;
-      if (tryLogin(user, pass)){
-        document.getElementById('loginDialog').close();
-      } else {
-        alert('Usuario o contraseña incorrectos');
-      }
-    });
-  }
+
   // Carga inicial de datos
   await loadAllAreas();
   await refreshWeeklyAllPrograms();

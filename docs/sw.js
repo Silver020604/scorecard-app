@@ -1,7 +1,7 @@
 
 // ===== Service Worker – GitHub Pages (/docs) =====
 const BASE = '/scorecard-app';     // prefijo del repo
-const VERSION = 'v4';              // incrementa cuando cambies recursos
+const VERSION = 'v5';              // incrementa cuando cambies recursos
 const STATIC_CACHE = `${BASE}-static-${VERSION}`;
 
 // Precarga de recursos estáticos
@@ -33,7 +33,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Mensajes desde la app (por ejemplo FLUSH para limpiar caché)
+// Mensajes desde la app (FLUSH limpia cachés versionadas)
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'FLUSH') {
     caches.keys().then(keys => {
@@ -52,9 +52,9 @@ self.addEventListener('fetch', (event) => {
   if (!url.pathname.startsWith(BASE)) return;
 
   const accept = req.headers.get('accept') || '';
-  const isHTML = accept.includes('text/html');
-  const isJSON = url.pathname.endsWith('.json');
-  const isStatic = /\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff2?)$/.test(url.pathname);
+  const isHTML  = accept.includes('text/html');
+  const isJSON  = url.pathname.endsWith('.json');
+  const isStatic= /\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff2?)$/.test(url.pathname);
 
   if (isHTML || isJSON) {
     event.respondWith(

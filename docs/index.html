@@ -94,11 +94,9 @@
   <!-- ✅ Tu lógica Admin + registro del SW relativo a /docs -->
   <script src="./admin.js"></script>
   <script>
-    // El SW vive en /docs → scope efectivo /scorecard-app/
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(console.error);
     }
-    // Abrir login desde el gate (por si tu admin.js no engancha el botón)
     document.getElementById('gateLoginBtn')?.addEventListener('click', () => {
       document.getElementById('loginDialog')?.showModal();
     });

@@ -10,13 +10,13 @@
  ========================================================= */
 
 // ===== Cerrar sesión y regresar a Admin =====
-const AUTH_KEY = 'scorecardUser'; // mismo nombre que usa admin.js
+const AUTH_KEY = 'scorecardUser';
 function hardLogoutToAdmin(){
   try { localStorage.removeItem(AUTH_KEY); } catch(e){}
   if (navigator.serviceWorker && navigator.serviceWorker.controller){
     navigator.serviceWorker.controller.postMessage({type:'FLUSH'});
   }
-  window.location.href = '../index.html'; // Admin en /docs/
+  window.location.href = '../index.html';
 }
 
 // --------- Utilidades ---------
@@ -30,7 +30,7 @@ function getTol(){ return Math.max(0, Math.min(50, Number(localStorage.getItem('
 function evaluarEstado({tipo, meta, actual, direccion}){ const tol=getTol(); if (tipo==='informativo') return {estado:'Info', color:'azul'}; const m=toNumberOrNull(meta), a=toNumberOrNull(actual); if (m===null||a===null) return {estado:'Info', color:'azul'}; if (direccion==='menor'){ if (a<=m) return {estado:'Cumple', color:'verde'}; if (a<=m*(1+tol)) return {estado:'Cerca', color:'amarillo'}; return {estado:'Crítico', color:'rojo'}; } else if (direccion==='mayor'){ if (a>=m) return {estado:'Cumple', color:'verde'}; if (a>=m*(1-tol)) return {estado:'Cerca', color:'amarillo'}; return {estado:'Crítico', color:'rojo'}; } return {estado:'Info', color:'azul'}; }
 const COLOR_CLASS = { verde:'green', amarillo:'yellow', rojo:'red', azul:'blue' };
 
-// --------- IndexedDB (lectura/escritura interna) ---------
+// --------- IndexedDB ---------
 let db;
 function openDB(){
   return new Promise((resolve,reject)=>{
@@ -159,14 +159,12 @@ async function importISOFromFile(file){
   try{ json = JSON.parse(text); }
   catch(err){ alert('El archivo no es un JSON válido.'); return; }
 
-  // Actualizar catálogos/tolerancia desde meta (si están)
   if (json.meta){
     if (json.meta.programas) localStorage.setItem('programas', json.meta.programas);
     if (json.meta.areas)     localStorage.setItem('areas',    json.meta.areas);
     if (json.meta.tolPct)    localStorage.setItem('tolPct',   String(json.meta.tolPct));
   }
 
-  // Volcar data al IndexedDB (sustituir)
   await new Promise((resolve,reject)=>{
     const tx=db.transaction('kpis','readwrite'); const st=tx.objectStore('kpis');
     st.clear();
@@ -175,14 +173,12 @@ async function importISOFromFile(file){
     tx.onerror   =()=> reject(tx.error);
   });
 
-  // Rellenar selector de programas por si cambiaron
   const sel=document.getElementById('programaExec'); sel.innerHTML='';
   getProgramas().forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
-
   await renderExec();
 }
 
-// --------- Render del resumen semanal (Exec) ---------
+// --------- Render del resumen semanal ---------
 async function renderExec(){
   const fecha = document.getElementById('fechaExec').value || todayLocal();
   const isoWeek = isoWeekString(fecha);
@@ -214,7 +210,6 @@ async function renderExec(){
   head.innerHTML = `<div class="program-name">${programa}</div><small>Semana ${isoWeek}</small>`;
   const body = document.createElement('div'); body.className='program-body';
 
-  // KPIs arriba (conteos)
   const kpis=document.createElement('div'); kpis.className='program-kpis';
   kpis.innerHTML =
 `<div class="card"><div class="kpi"><span class="dot green"></span><strong>Verdes:</strong><span>${counts.verde||0}</span></div></div>
@@ -223,7 +218,6 @@ async function renderExec(){
  <div class="card"><div class="kpi"><span class="dot blue"></span><strong>Informativos:</strong><span>${counts.azul||0}</span></div></div>`;
   body.appendChild(kpis);
 
-  // Tabla semanal (incluye "Notas")
   const wrap = document.createElement('div'); wrap.className='program-table';
   const tableContainer=document.createElement('div'); tableContainer.className='table-container';
   const table=document.createElement('table');
@@ -247,7 +241,7 @@ async function renderExec(){
   table.appendChild(tbody); tableContainer.appendChild(table); wrap.appendChild(tableContainer);
   body.appendChild(wrap); block.appendChild(head); block.appendChild(body);
 
-  // Botones de exportación / import
+  // Botones exportaciones/import
   const csvBtn = document.createElement('button');
   csvBtn.className='btn'; csvBtn.textContent='⬇️ Exportar CSV (programa)';
   csvBtn.style.margin='8px 14px';
@@ -319,7 +313,6 @@ async function renderExec(){
   const backBtn = document.getElementById('btnBackToAdmin');
   if (backBtn) backBtn.addEventListener('click', hardLogoutToAdmin);
 
-  // Eventos y render
   sel.addEventListener('change', renderExec);
   document.getElementById('fechaExec').addEventListener('change', renderExec);
   await renderExec();
