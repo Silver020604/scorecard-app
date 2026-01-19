@@ -2,17 +2,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Redirigiendo…</title>
-  <meta http-equiv="refresh" content="0; url=/scorecard-app/index.html">
-  <script>
-    const target = '/scorecard-app/index.html';
-    if (location.pathname !== target) location.replace(target);
-  </script>
-  <style>body{font-family:system-ui,Arial;padding:20px}</style>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Redirigiendo…</title>
+
+    <meta http-equiv="refresh" content="0; url=/scorecard-app/index.html">
+    <script>
+        const target = '/scorecard-app/index.html';
+        if (location.pathname !== target) location.replace(target);
+    </script>
+
+    <style>
+        body { font-family:system-ui,Arial; padding:20px;color:white;background:#0b1323; }
+    </style>
 </head>
+
 <body>
-  <p>Redirigiendo a la página principal…</p>
+    <p>Redirigiendo a la página principal…</p>
+
+    <!-- Marca de agua -->
+    <div class="watermark">Silver</div>
+
 </body>
 </html>

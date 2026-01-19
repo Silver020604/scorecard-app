@@ -6,11 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Scorecard Safran Cabin — Captura diaria</title>
 
-  <!-- ✅ Enlaces correctos dentro de /docs -->
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" href="./icons/icon-192.png" />
-  <meta name="theme-color" content="#0b1323" />
+  <!-- Enlaces correctos para GitHub Pages -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
 </head>
 <body>
   <header>
@@ -28,7 +26,7 @@
     </div>
   </section>
 
-  <!-- Barra de login (usuario + Salir) -->
+  <!-- Barra de login -->
   <section class="auth-bar" aria-label="Autenticación">
     <div id="authStatus" class="user"></div>
   </section>
@@ -54,10 +52,11 @@
       <div class="field"><label for="fecha">Fecha</label><input id="fecha" type="date" /></div>
       <div class="field"><label for="programa">Programa</label><select id="programa"></select></div>
       <div class="field"><label for="tolQuick">% Amarillo</label><input id="tolQuick" type="number" min="0" max="50" step="1" placeholder="5" /></div>
+
       <div class="field"><label></label><button id="addAreaBtn" class="btn">➕ Añadir área</button></div>
       <div class="field"><label></label><button id="saveAll" class="btn">💾 Guardar todo</button></div>
       <div class="field"><label></label><button id="exportBtn" class="btn">⬇️ Descargar reporte</button></div>
-      <div class="field"><label></label><button id="importBtn" class="btn">⬆️ Importar reporte</button></div>
+      <div class="field"><label></label><button id="importBtn" class="btn">⬆️ Ver reporte</button></div>
       <div class="field" style="margin-left:auto"><label></label>
         <div class="legend">
           <span class="dot green"></span> Verde
@@ -79,7 +78,7 @@
     <!-- Áreas -->
     <section id="areasContainer"></section>
 
-    <!-- Resumen semanal (Admin) -->
+    <!-- Resumen semanal -->
     <section class="weekly">
       <h3 style="margin:0 0 8px 0; color:#ffd7a6">Resumen semanal (todos los programas)</h3>
       <div id="weeklyPrograms"></div>
@@ -87,21 +86,39 @@
     </section>
   </main>
 
+  <!-- Diálogo de configuración -->
+  <dialog id="config">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border)">
+      <strong>Configuración</strong>
+      <button onclick="document.getElementById('config').close()" class="btn">✖</button>
+    </div>
+    <div style="padding:14px">
+      <div class="field" style="margin-bottom:12px">
+        <label>Programas (coma-separadas)</label>
+        <textarea id="programasInput" rows="3" placeholder="COMAC, A220, FLOOR TO FLOOR, SHIPLOOSE, BOEING, AIRBUS"></textarea>
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>Áreas visibles (coma-separadas)</label>
+        <textarea id="areasInput" rows="4" placeholder="Safety, Quality, People, Delivery, Cost/Productividad, Supply Chain, EBIT, CI, Primarios, LTPO, Output Past DUE"></textarea>
+        <small class="hint">Duplicados se eliminan automáticamente. “Output Past DVE” se normaliza a “Output Past DUE”.</small>
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label>Porcentaje semáforo amarillo (±%)</label>
+        <input id="tolPctInput" type="number" min="0" max="50" step="1" placeholder="5" />
+      </div>
+      <button id="saveCfg" class="btn primary">Guardar configuración</button>
+    </div>
+  </dialog>
+
   <!-- Picker oculto para importar -->
   <input id="filePicker" type="file" accept="application/json" style="display:none" />
 
-  <!-- ✅ Marca de agua (ÚNICO CAMBIO EN ESTE HTML) -->
-  <div class="watermark">BY SILVER HERNANDEZ</div>
-
-  <!-- ✅ Tu lógica Admin + registro del SW relativo a /docs -->
-  <script src="./admin.js"></script>
+  <!-- Scripts -->
+  <script src="admin.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(console.error);
+      navigator.serviceWorker.register('sw.js');
     }
-    document.getElementById('gateLoginBtn')?.addEventListener('click', () => {
-      document.getElementById('loginDialog')?.showModal();
-    });
   </script>
 </body>
 </html>
