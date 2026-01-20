@@ -32,7 +32,7 @@ select,input,button,textarea{background:#0e1c37;color:var(--text);border:1px sol
 select:focus,input:focus,textarea:focus,button:focus{outline:2px solid var(--focus);outline-offset:2px}
 .btn{padding:8px 12px;border-radius:10px;border:1px solid var(--border);cursor:pointer}
 .btn.primary{background:linear-gradient(180deg, rgba(240,138,36,.15), rgba(240,138,36,.12));
- border-color:var(--accent-orange-2);color:#8888e0}
+ border-color:var(--accent-orange-2);color:#9999e7}
 /* Leyenda y tarjetas */
 .legend{display:flex;gap:10px;align-items:center}
 .dot{width:10px;height:10px;border-radius:999px;display:inline-block}
